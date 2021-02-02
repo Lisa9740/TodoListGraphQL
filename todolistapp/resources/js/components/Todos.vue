@@ -10,7 +10,7 @@
 
                 <template v-slot:activator="{ on, attrs }">
                     <v-btn
-                        color="red lighten-2"
+                        color="red lighten-3"
                         dark
                         v-bind="attrs"
                         v-on="on"
@@ -20,7 +20,7 @@
                 </template>
 
                 <v-card>
-                    <v-card-title class="headline grey lighten-2">
+                    <v-card-title class="headline">
                         Nouvelle tâche
                     </v-card-title>
 
@@ -79,6 +79,7 @@
                                 :key="n"
                                 :label="`Priorité ${n}`"
                                 :value="n"
+                               color="red"
                             ></v-radio>
                         </v-radio-group>
                     </v-card-text>
@@ -109,14 +110,15 @@
                 {{ todo.priority }}
             </v-card-text>
             <v-card-actions>
-
+                <EditTodos :todos="todo"/>
             </v-card-actions>
         </v-card>
     </div>
 </template>
 <script>
 import axios from 'axios';
-/*import EditTodo from '../components/editTodo.vue';*/
+import EditTodos from '../components/EditTodos.vue';
+
 export default {
     computed: {},
     data() {
@@ -132,7 +134,7 @@ export default {
             dialog: false,
         }
     },
-/*    components : { EditTodo },*/
+  components : { EditTodos },
     methods : {
         createTodo : function () {
             this.todos = []
@@ -168,8 +170,10 @@ export default {
                 data: {
                     query: `{
                             todos{
+                              id
                               title
                               date_execution
+                              description
                               priority
                               }}`
                 }
