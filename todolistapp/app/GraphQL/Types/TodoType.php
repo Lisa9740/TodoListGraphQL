@@ -8,7 +8,7 @@ use Rebing\GraphQL\Support\Type as GraphQLType;
 
 class TodoType extends GraphQLType
 {
-    protected $attributes = [
+    protected array $attributes = [
         'name' => 'Todo',
         'description' => 'Collection of books and details of Author',
         'model' => Todo::class

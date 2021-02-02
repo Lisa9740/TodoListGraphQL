@@ -6,6 +6,7 @@ use example\Mutation\ExampleMutation;
 use example\Query\ExampleQuery;
 use example\Type\ExampleRelationType;
 use example\Type\ExampleType;
+use Rebing\GraphQL\GraphQLController;
 
 return [
 
@@ -42,7 +43,7 @@ return [
     //     'mutation' => '\Rebing\GraphQL\GraphQLController@mutation'
     // ]
     //
-    'controllers' => \Rebing\GraphQL\GraphQLController::class.'@query',
+    'controllers' => GraphQLController::class.'@query',
 
     // Any middleware for the graphql route group
     'middleware' => [],
@@ -101,15 +102,22 @@ return [
     'schemas' => [
         'default' => [
             'query' => [
-                // 'example_query' => ExampleQuery::class,
+                'todo' => App\GraphQL\Queries\TodoQuery::class,
+                'todos' => App\GraphQL\Queries\TodosQuery::class,
             ],
             'mutation' => [
+                // Create a book
+                'createTodo' => App\GraphQL\Mutations\CreateTodoMutation::class,
+                // update book
+                'updateTodo' => App\GraphQL\Mutations\UpdateTodoMutation::class,
+                // delete a book
                 // 'example_mutation'  => ExampleMutation::class,
             ],
             'middleware' => [],
             'method' => ['get', 'post'],
         ],
     ],
+
 
     // The types available in the application. You can then access it from the
     // facade like this: GraphQL::type('user')
@@ -121,9 +129,7 @@ return [
     // ]
     //
     'types' => [
-        // 'example'           => ExampleType::class,
-        // 'relation_example'  => ExampleRelationType::class,
-        // \Rebing\GraphQL\Support\UploadType::class,
+        'Todo' => App\GraphQL\Types\TodoType::class,
     ],
 
     // The types will be loaded on demand. Default is to load all types on each request
@@ -174,7 +180,7 @@ return [
      */
     'graphiql' => [
         'prefix' => '/graphiql',
-        'controller' => \Rebing\GraphQL\GraphQLController::class.'@graphiql',
+        'controller' => GraphQLController::class.'@graphiql',
         'middleware' => [],
         'view' => 'graphql::graphiql',
         'display' => env('ENABLE_GRAPHIQL', true),

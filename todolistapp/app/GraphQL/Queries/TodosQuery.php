@@ -9,7 +9,7 @@ use Rebing\GraphQL\Support\Query;
 
 class TodosQuery extends Query
 {
-    protected $attributes = [
+    protected array $attributes = [
         'name' => 'todos',
     ];
 

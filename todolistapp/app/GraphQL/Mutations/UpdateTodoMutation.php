@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Graphql\Mutations;
+namespace App\graphql\Mutations;
 
 use App\Models\Todo;
 use Rebing\GraphQL\Support\Mutation;
 use GraphQL\Type\Definition\Type;
 use Rebing\GraphQL\Support\Facades\GraphQL;
 
-class CreateTodoMutation extends Mutation
+class UpdateTodoMutation extends Mutation
 {
-    protected $attributes = [
-        'name' => 'createTodo'
+    protected array $attributes = [
+        'name' => 'updateTodo'
     ];
 
     public function type(): Type
@@ -25,30 +25,25 @@ class CreateTodoMutation extends Mutation
                 'name' => 'title',
                 'type' =>  Type::nonNull(Type::string()),
             ],
-            'date_execution' => [
-                'name' => 'date_execution',
+            'execution_date' => [
+                'name' => 'execution_date',
                 'type' =>  Type::nonNull(Type::string()),
             ],
             'priority' => [
                 'name' => 'priority',
                 'type' =>  Type::nonNull(Type::string()),
             ],
-            'description' => [
-                'name' => 'description',
-                'type' =>  Type::nonNull(Type::string()),
-            ],
-            'is_executed' => [
-                'name' => 'is_executed',
+            'is_execute' => [
+                'name' => 'is_execute',
                 'type' =>  Type::nonNull(Type::boolean()),
-            ],
-
+            ]
 
         ];
     }
 
     public function resolve($root, $args)
     {
-        $todo = new Todo();
+        $todo = Todo::findOrFail($args['id']);
         $todo->fill($args);
         $todo->save();
 

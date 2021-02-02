@@ -10,7 +10,7 @@
 
         <v-main>
             <v-container>
-
+             <TodoComponents />
             </v-container>
         </v-main>
 
@@ -21,7 +21,9 @@
 </template>
 
 <script>
+import TodoComponents from './Todos.vue'
 export default {
+    components: { TodoComponents },
     props: {
         source: String,
     },
