@@ -34,7 +34,6 @@
                                 <template v-slot:activator="{ on, attrs }">
                                     <v-text-field
                                         v-model="todos.date_execution"
-                                        :value="date"
                                         label="Choisir une date d'execution"
                                         prepend-icon="mdi-calendar"
                                         readonly
@@ -152,15 +151,14 @@ export default{
             this.isShow = true
         },
         save  : function () {
-        this.todos = []
         axios({
             url: '/graphql',
             method: 'POST',
             data: {
                 query:
                     `mutation{
-                            updateTodo(id: "${ this.todos.id}", title:"${ this.title }", date_execution:"${ this.date }", priority:"${ this.radioGroup }",
-                                       description:"${ this.description }", is_executed:false)
+                            updateTodo( id:"${ this.todos.id }",title:"${ this.todos.title }",date_execution:"${ this.todos.date_execution }",priority:"haute",
+                                       description:"${ this.todos.description }",is_executed:false)
                             {
                                 id
                                 title
