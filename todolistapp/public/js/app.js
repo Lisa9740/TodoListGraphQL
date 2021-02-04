@@ -1967,6 +1967,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: {
@@ -2003,10 +2007,22 @@ __webpack_require__.r(__webpack_exports__);
         url: '/graphql',
         method: 'POST',
         data: {
-          query: "mutation{\n                            updateTodo( id:\"".concat(this.todos.id, "\",title:\"").concat(this.todos.title, "\",date_execution:\"").concat(this.todos.date_execution, "\",priority:\"").concat(this.radioGroup, "\",\n                                       description:\"").concat(this.todos.description, "\",is_executed:false)\n                            {\n                                id\n                                title\n                                date_execution\n                                priority\n                                description\n                            }\n                        }")
+          query: "mutation{\n                            updateTodo( id:\"".concat(this.todos.id, "\",title:\"").concat(this.todos.title, "\",date_execution:\"").concat(this.todos.date_execution, "\",priority:\"").concat(this.radioGroup, "\",\n                                       description:\"").concat(this.todos.description, "\",is_executed:").concat(this.todos.is_executed, ")\n                            {\n                                id\n                                title\n                                date_execution\n                                priority\n                                description\n                                is_executed\n                            }\n                        }")
         }
       }).then(function (result) {
         console.log(result);
+      });
+    },
+    setIsExecuteTask: function setIsExecuteTask(id, isExecuted) {
+      this.todos = [];
+      axios__WEBPACK_IMPORTED_MODULE_0___default()({
+        url: '/graphql',
+        method: 'POST',
+        data: {
+          query: "mutation{\n                        updateTodoExecution(id:\"".concat(id, "\", is_executed: ").concat(isExecuted, ")\n                        {\n                            id\n                            is_executed\n                        }\n                    }")
+        }
+      }).then(function (result) {
+        console.log("test" + JSON.stringify(result.data));
       });
     }
   }
@@ -2235,6 +2251,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -2305,18 +2330,6 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (result) {
         console.log("hi priority" + JSON.stringify(result.data));
         _this3.todos = result.data.data;
-      });
-    },
-    setIsExecuteTask: function setIsExecuteTask(id, isExecuted) {
-      this.todos = [];
-      axios__WEBPACK_IMPORTED_MODULE_0___default()({
-        url: '/graphql',
-        method: 'POST',
-        data: {
-          query: "mutation{\n                        updateTodoExecution(id:\"".concat(id, "\", is_executed: ").concat(isExecuted, ")\n                        {\n                            id\n                            is_executed\n                        }\n                    }")
-        }
-      }).then(function (result) {
-        console.log("test" + JSON.stringify(result.data));
       });
     }
   },
@@ -38633,14 +38646,25 @@ var render = function() {
                             1
                           ),
                           _vm._v(" "),
-                          _c("br"),
-                          _vm._v(" "),
-                          _c("v-btn", { on: { click: _vm.save } }, [
-                            _vm._v("Modifier")
-                          ])
+                          _c("v-switch", {
+                            attrs: { label: "Finis", color: "red" },
+                            model: {
+                              value: _vm.todos.is_executed,
+                              callback: function($$v) {
+                                _vm.$set(_vm.todos, "is_executed", $$v)
+                              },
+                              expression: "todos.is_executed"
+                            }
+                          })
                         ],
                         1
-                      )
+                      ),
+                      _vm._v(" "),
+                      _c("v-spacer"),
+                      _vm._v(" "),
+                      _c("v-btn", { on: { click: _vm.save } }, [
+                        _vm._v("Modifier")
+                      ])
                     ],
                     1
                   )
@@ -39132,21 +39156,35 @@ var render = function() {
                 ),
                 _c("v-spacer"),
                 _vm._v(" "),
-                _c("v-switch", {
-                  attrs: { label: "Finis", color: "red" },
-                  on: {
-                    click: function($event) {
-                      return _vm.setIsExecuteTask(todo.id, todo.is_executed)
-                    }
-                  },
-                  model: {
-                    value: todo.is_executed,
-                    callback: function($$v) {
-                      _vm.$set(todo, "is_executed", $$v)
-                    },
-                    expression: "todo.is_executed"
-                  }
-                })
+                !todo.is_executed
+                  ? _c(
+                      "v-icon",
+                      {
+                        attrs: {
+                          large: "",
+                          color: "green darken-2",
+                          disabled: ""
+                        }
+                      },
+                      [
+                        _vm._v(
+                          "\n                    mdi-check\n                "
+                        )
+                      ]
+                    )
+                  : _vm._e(),
+                _vm._v(" "),
+                todo.is_executed
+                  ? _c(
+                      "v-icon",
+                      { attrs: { large: "", color: "green darken-2" } },
+                      [
+                        _vm._v(
+                          "\n                    mdi-check\n                "
+                        )
+                      ]
+                    )
+                  : _vm._e()
               ],
               1
             ),

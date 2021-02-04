@@ -139,12 +139,21 @@
             <v-card-text class="d-flex">
                 {{ todo.title }}
                 <v-spacer></v-spacer>
-                <v-switch
-                    v-model="todo.is_executed"
-                    label="Finis"
-                    color="red"
-                    @click="setIsExecuteTask(todo.id, todo.is_executed)"
-                ></v-switch>
+                    <v-icon
+                        large
+                        color="green darken-2"
+                        v-if="!todo.is_executed" disabled
+                    >
+                        mdi-check
+                    </v-icon>
+                    <v-icon
+                        large
+                        color="green darken-2"
+                        v-if="todo.is_executed"
+                    >
+                        mdi-check
+                    </v-icon>
+
             </v-card-text>
             <v-card-actions>
                 <EditTodos :todos="todo"/>
@@ -155,7 +164,6 @@
 <script>
 import axios from 'axios';
 import EditTodos from '../components/EditTodos.vue';
-
 export default {
     computed: {},
     data() {
@@ -170,6 +178,7 @@ export default {
             date: '',
             menu: false,
             dialog: false,
+
         }
     },
   components : { EditTodos },
@@ -241,26 +250,7 @@ export default {
                 this.todos = result.data.data
             });
         },
-        setIsExecuteTask : function (id, isExecuted){
-            this.todos = []
 
-            axios({
-                url: '/graphql',
-                method: 'POST',
-                data: {
-                    query:
-                        `mutation{
-                        updateTodoExecution(id:"${ id }", is_executed: ${ isExecuted })
-                        {
-                            id
-                            is_executed
-                        }
-                    }`
-                }
-            }).then((result) => {
-                console.log("test" + JSON.stringify(result.data))
-            });
-        }
     },
     created() {
         this.retrieveTodos();

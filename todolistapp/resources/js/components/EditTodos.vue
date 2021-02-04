@@ -79,10 +79,14 @@
                                     color="red"
                                 ></v-radio>
                             </v-radio-group>
-                            <br>
-                            <v-btn @click="save">Modifier</v-btn>
+                            <v-switch
+                                v-model="todos.is_executed"
+                                label="Finis"
+                                color="red"
+                            ></v-switch>
                         </v-row>
-
+                        <v-spacer></v-spacer>
+                        <v-btn @click="save">Modifier</v-btn>
                     </v-card-text>
 
                     <v-card-text v-if="isShow" class="d-flex">
@@ -159,13 +163,14 @@ export default{
                 query:
                     `mutation{
                             updateTodo( id:"${ this.todos.id }",title:"${ this.todos.title }",date_execution:"${ this.todos.date_execution }",priority:"${ this.radioGroup }",
-                                       description:"${ this.todos.description }",is_executed:false)
+                                       description:"${ this.todos.description }",is_executed:${this.todos.is_executed})
                             {
                                 id
                                 title
                                 date_execution
                                 priority
                                 description
+                                is_executed
                             }
                         }`
             }
@@ -173,6 +178,26 @@ export default{
             console.log(result)
         });
 },
+        setIsExecuteTask : function (id, isExecuted){
+            this.todos = []
+
+            axios({
+                url: '/graphql',
+                method: 'POST',
+                data: {
+                    query:
+                        `mutation{
+                        updateTodoExecution(id:"${ id }", is_executed: ${ isExecuted })
+                        {
+                            id
+                            is_executed
+                        }
+                    }`
+                }
+            }).then((result) => {
+                console.log("test" + JSON.stringify(result.data))
+            });
+        }
 
     }
 }
