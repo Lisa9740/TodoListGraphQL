@@ -131,6 +131,7 @@ export default{
         return {
             dialog: false,
             isEdited: false,
+            n: 0,
             isShow: true,
             priorities : ['Haute', 'Moyenne', 'Basse'],
             title:'',
@@ -157,7 +158,7 @@ export default{
             data: {
                 query:
                     `mutation{
-                            updateTodo( id:"${ this.todos.id }",title:"${ this.todos.title }",date_execution:"${ this.todos.date_execution }",priority:"haute",
+                            updateTodo( id:"${ this.todos.id }",title:"${ this.todos.title }",date_execution:"${ this.todos.date_execution }",priority:"${ this.radioGroup }",
                                        description:"${ this.todos.description }",is_executed:false)
                             {
                                 id

@@ -24,13 +24,12 @@ class TodoQuery extends Query
             'id' => [
                 'name' => 'id',
                 'type' => Type::int(),
-                'rules' => ['required']
             ],
         ];
     }
 
     public function resolve($root, $args)
     {
-        return Todo::findOrFail($args['id']);
+        return Todo::find($args['id']);
     }
 }

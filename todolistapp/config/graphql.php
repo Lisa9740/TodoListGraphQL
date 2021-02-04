@@ -110,6 +110,7 @@ return [
                 'createTodo' => App\GraphQL\Mutations\CreateTodoMutation::class,
                 // update book
                 'updateTodo' => App\GraphQL\Mutations\UpdateTodoMutation::class,
+                'updateTodoExecution' => App\GraphQL\Mutations\UpdateTodoExecutionMutation::class,
                 // delete a book
                 // 'example_mutation'  => ExampleMutation::class,
             ],

@@ -21,14 +21,14 @@ class TodoSeeder extends Seeder
             [
                 'title' => "My task",
                 'date_execution' => new DateTime(),
-                'priority' => 'faible',
+                'priority' => 'Basse',
                 'description' => "je suis une description",
                 'is_executed' => false
             ],
             [
                 'title' => "My task for home",
                 'date_execution' => new DateTime(),
-                'priority' => 'forte',
+                'priority' => 'Haute',
                 'description' => "je suis une description",
                 'is_executed' => false
             ],

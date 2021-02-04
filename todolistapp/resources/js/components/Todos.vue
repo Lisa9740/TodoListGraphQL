@@ -1,13 +1,11 @@
 <template>
     <div>
         <div class="d-flex ">
-            <h1>Ma todo list</h1>
             <v-spacer></v-spacer>
             <v-dialog
                 v-model="dialog"
                 width="500"
             >
-
                 <template v-slot:activator="{ on, attrs }">
                     <v-btn
                         color="red lighten-3"
@@ -18,7 +16,6 @@
                         Ajouter
                     </v-btn>
                 </template>
-
                 <v-card>
                     <v-card-title class="headline">
                         Nouvelle tâche
@@ -92,22 +89,62 @@
                             color="primary"
                             text
                             @click="createTodo"
+                            class="mb-5"
                         >
                             Ajouter
                         </v-btn>
+
                     </v-card-actions>
                 </v-card>
             </v-dialog>
         </div>
+        <v-spacer></v-spacer>
+        <v-divider></v-divider>
+        <div class="d-flex-inline">
+            <v-radio-group v-model="radioGroup" row>
+            <v-radio
+                label="Tout"
+                color="red"
+                value="Tout"
+                @click="retrieveTodos()"
+            ></v-radio>
+
+            <v-radio
+                label="Haute"
+                color="red"
+                value="Haute"
+                @click="FilterPriorities('Haute')"
+            ></v-radio>
+                <v-radio
+                    label="Moyenne"
+                    color="red"
+                    value="Moyenne"
+                    @click="FilterPriorities('Moyenne')"
+                ></v-radio>
+                <v-radio
+                    label="Basse"
+                    color="red"
+                    value="Basse"
+                    @click="FilterPriorities('Basse')"
+                ></v-radio>
+            </v-radio-group>
+        </div>
+
+        <v-divider></v-divider>
         <v-card
             elevation="2"
-            class="mt-7"
+            class="mt-7 d-flex"
             v-for="todo in todos.todos" v-bind:key="todo.id"
         >
             <v-card-text class="d-flex">
                 {{ todo.title }}
                 <v-spacer></v-spacer>
-                {{ todo.priority }}
+                <v-switch
+                    v-model="todo.is_executed"
+                    label="Finis"
+                    color="red"
+                    @click="setIsExecuteTask(todo.id, todo.is_executed)"
+                ></v-switch>
             </v-card-text>
             <v-card-actions>
                 <EditTodos :todos="todo"/>
@@ -124,6 +161,7 @@ export default {
     data() {
         return {
             todos: [],
+            switch1 : false,
             priorities : ['Haute', 'Moyenne', 'Basse'],
             title:'',
             description:'',
@@ -175,12 +213,53 @@ export default {
                               date_execution
                               description
                               priority
+                              is_executed
                               }}`
                 }
             }).then((result) => {
-                console.log("ttttest" + result.data)
+                console.log("ttttest" + JSON.stringify(result.data.data))
                 this.todos = result.data.data
              });
+        },
+        FilterPriorities : function (priority) {
+            this.todos = []
+            axios({
+                url: '/graphql',
+                method: 'POST',
+                data: {
+                    query: `{
+                    todos(priority:"${priority}"){
+                                title
+                                priority
+                                date_execution
+                                description
+                                is_executed
+                        }}`
+                }
+            }).then((result) => {
+                console.log("hi priority" + JSON.stringify(result.data))
+                this.todos = result.data.data
+            });
+        },
+        setIsExecuteTask : function (id, isExecuted){
+            this.todos = []
+
+            axios({
+                url: '/graphql',
+                method: 'POST',
+                data: {
+                    query:
+                        `mutation{
+                        updateTodoExecution(id:"${ id }", is_executed: ${ isExecuted })
+                        {
+                            id
+                            is_executed
+                        }
+                    }`
+                }
+            }).then((result) => {
+                console.log("test" + JSON.stringify(result.data))
+            });
         }
     },
     created() {

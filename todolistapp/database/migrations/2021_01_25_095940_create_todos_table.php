@@ -16,7 +16,7 @@ class CreateTodosTable extends Migration
         Schema::create('todos', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->dateTime('date_execution');
+            $table->string('date_execution');
             $table->string('priority');
             $table->text('description');
             $table->boolean('is_executed');

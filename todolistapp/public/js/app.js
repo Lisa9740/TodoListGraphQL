@@ -1967,9 +1967,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: {
@@ -1981,6 +1978,7 @@ __webpack_require__.r(__webpack_exports__);
     return {
       dialog: false,
       isEdited: false,
+      n: 0,
       isShow: true,
       priorities: ['Haute', 'Moyenne', 'Basse'],
       title: '',
@@ -2001,12 +1999,11 @@ __webpack_require__.r(__webpack_exports__);
       this.isShow = true;
     },
     save: function save() {
-      this.todos = [];
       axios__WEBPACK_IMPORTED_MODULE_0___default()({
         url: '/graphql',
         method: 'POST',
         data: {
-          query: "mutation{\n                            updateTodo(id: \"".concat(this.todos.id, "\", title:\"").concat(this.title, "\", date_execution:\"").concat(this.date, "\", priority:\"").concat(this.radioGroup, "\",\n                                       description:\"").concat(this.description, "\", is_executed:false)\n                            {\n                                id\n                                title\n                                date_execution\n                                priority\n                                description\n                            }\n                        }")
+          query: "mutation{\n                            updateTodo( id:\"".concat(this.todos.id, "\",title:\"").concat(this.todos.title, "\",date_execution:\"").concat(this.todos.date_execution, "\",priority:\"").concat(this.radioGroup, "\",\n                                       description:\"").concat(this.todos.description, "\",is_executed:false)\n                            {\n                                id\n                                title\n                                date_execution\n                                priority\n                                description\n                            }\n                        }")
         }
       }).then(function (result) {
         console.log(result);
@@ -2029,7 +2026,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _Todos_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Todos.vue */ "./resources/js/components/Todos.vue");
-//
 //
 //
 //
@@ -2202,6 +2198,43 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -2209,6 +2242,7 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       todos: [],
+      switch1: false,
       priorities: ['Haute', 'Moyenne', 'Basse'],
       title: '',
       description: '',
@@ -2251,11 +2285,38 @@ __webpack_require__.r(__webpack_exports__);
         url: '/graphql',
         method: 'POST',
         data: {
-          query: "{\n                            todos{\n                              id\n                              title\n                              date_execution\n                              description\n                              priority\n                              }}"
+          query: "{\n                            todos{\n                              id\n                              title\n                              date_execution\n                              description\n                              priority\n                              is_executed\n                              }}"
         }
       }).then(function (result) {
-        console.log("ttttest" + result.data);
+        console.log("ttttest" + JSON.stringify(result.data.data));
         _this2.todos = result.data.data;
+      });
+    },
+    FilterPriorities: function FilterPriorities(priority) {
+      var _this3 = this;
+
+      this.todos = [];
+      axios__WEBPACK_IMPORTED_MODULE_0___default()({
+        url: '/graphql',
+        method: 'POST',
+        data: {
+          query: "{\n                    todos(priority:\"".concat(priority, "\"){\n                                title\n                                priority\n                                date_execution\n                                description\n                                is_executed\n                        }}")
+        }
+      }).then(function (result) {
+        console.log("hi priority" + JSON.stringify(result.data));
+        _this3.todos = result.data.data;
+      });
+    },
+    setIsExecuteTask: function setIsExecuteTask(id, isExecuted) {
+      this.todos = [];
+      axios__WEBPACK_IMPORTED_MODULE_0___default()({
+        url: '/graphql',
+        method: 'POST',
+        data: {
+          query: "mutation{\n                        updateTodoExecution(id:\"".concat(id, "\", is_executed: ").concat(isExecuted, ")\n                        {\n                            id\n                            is_executed\n                        }\n                    }")
+        }
+      }).then(function (result) {
+        console.log("test" + JSON.stringify(result.data));
       });
     }
   },
@@ -38398,16 +38459,13 @@ var render = function() {
                         "v-row",
                         [
                           _c("v-text-field", {
-                            attrs: {
-                              label: "Nom de la tâche",
-                              placeholder: _vm.todos.title
-                            },
+                            attrs: { label: "Nom de la tâche" },
                             model: {
-                              value: _vm.title,
+                              value: _vm.todos.title,
                               callback: function($$v) {
-                                _vm.title = $$v
+                                _vm.$set(_vm.todos, "title", $$v)
                               },
-                              expression: "title"
+                              expression: "todos.title"
                             }
                           }),
                           _vm._v(" "),
@@ -38434,8 +38492,6 @@ var render = function() {
                                             _vm._b(
                                               {
                                                 attrs: {
-                                                  value:
-                                                    _vm.todos.date_execution,
                                                   label:
                                                     "Choisir une date d'execution",
                                                   "prepend-icon":
@@ -38443,11 +38499,17 @@ var render = function() {
                                                   readonly: ""
                                                 },
                                                 model: {
-                                                  value: _vm.date,
+                                                  value:
+                                                    _vm.todos.date_execution,
                                                   callback: function($$v) {
-                                                    _vm.date = $$v
+                                                    _vm.$set(
+                                                      _vm.todos,
+                                                      "date_execution",
+                                                      $$v
+                                                    )
                                                   },
-                                                  expression: "date"
+                                                  expression:
+                                                    "todos.date_execution"
                                                 }
                                               },
                                               "v-text-field",
@@ -38463,7 +38525,7 @@ var render = function() {
                                 ],
                                 null,
                                 false,
-                                3443917429
+                                3609057288
                               ),
                               model: {
                                 value: _vm.menu,
@@ -38478,17 +38540,13 @@ var render = function() {
                               _c(
                                 "v-date-picker",
                                 {
-                                  attrs: {
-                                    value: _vm.todos.date_execution,
-                                    "no-title": "",
-                                    scrollable: ""
-                                  },
+                                  attrs: { "no-title": "", scrollable: "" },
                                   model: {
-                                    value: _vm.date,
+                                    value: _vm.todos.date_execution,
                                     callback: function($$v) {
-                                      _vm.date = $$v
+                                      _vm.$set(_vm.todos, "date_execution", $$v)
                                     },
-                                    expression: "date"
+                                    expression: "todos.date_execution"
                                   }
                                 },
                                 [
@@ -38538,15 +38596,14 @@ var render = function() {
                             attrs: {
                               name: "input-7-1",
                               label: "Description",
-                              value: _vm.todos.description,
                               hint: "Hint text"
                             },
                             model: {
-                              value: _vm.description,
+                              value: _vm.todos.description,
                               callback: function($$v) {
-                                _vm.description = $$v
+                                _vm.$set(_vm.todos, "description", $$v)
                               },
-                              expression: "description"
+                              expression: "todos.description"
                             }
                           }),
                           _vm._v(" "),
@@ -38695,18 +38752,7 @@ var render = function() {
       _c(
         "v-app-bar",
         { attrs: { app: "", "clipped-left": "" } },
-        [
-          _c("v-app-bar-nav-icon", {
-            on: {
-              click: function($event) {
-                $event.stopPropagation()
-                _vm.drawer = !_vm.drawer
-              }
-            }
-          }),
-          _vm._v(" "),
-          _c("v-toolbar-title", [_vm._v("Application")])
-        ],
+        [_c("v-toolbar-title", [_vm._v("MyTodoList")])],
         1
       ),
       _vm._v(" "),
@@ -38749,8 +38795,6 @@ var render = function() {
         "div",
         { staticClass: "d-flex " },
         [
-          _c("h1", [_vm._v("Ma todo list")]),
-          _vm._v(" "),
           _c("v-spacer"),
           _vm._v(" "),
           _c(
@@ -38982,6 +39026,7 @@ var render = function() {
                       _c(
                         "v-btn",
                         {
+                          staticClass: "mb-5",
                           attrs: { color: "primary", text: "" },
                           on: { click: _vm.createTodo }
                         },
@@ -39004,10 +39049,79 @@ var render = function() {
         1
       ),
       _vm._v(" "),
+      _c("v-spacer"),
+      _vm._v(" "),
+      _c("v-divider"),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "d-flex-inline" },
+        [
+          _c(
+            "v-radio-group",
+            {
+              attrs: { row: "" },
+              model: {
+                value: _vm.radioGroup,
+                callback: function($$v) {
+                  _vm.radioGroup = $$v
+                },
+                expression: "radioGroup"
+              }
+            },
+            [
+              _c("v-radio", {
+                attrs: { label: "Tout", color: "red", value: "Tout" },
+                on: {
+                  click: function($event) {
+                    return _vm.retrieveTodos()
+                  }
+                }
+              }),
+              _vm._v(" "),
+              _c("v-radio", {
+                attrs: { label: "Haute", color: "red", value: "Haute" },
+                on: {
+                  click: function($event) {
+                    return _vm.FilterPriorities("Haute")
+                  }
+                }
+              }),
+              _vm._v(" "),
+              _c("v-radio", {
+                attrs: { label: "Moyenne", color: "red", value: "Moyenne" },
+                on: {
+                  click: function($event) {
+                    return _vm.FilterPriorities("Moyenne")
+                  }
+                }
+              }),
+              _vm._v(" "),
+              _c("v-radio", {
+                attrs: { label: "Basse", color: "red", value: "Basse" },
+                on: {
+                  click: function($event) {
+                    return _vm.FilterPriorities("Basse")
+                  }
+                }
+              })
+            ],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c("v-divider"),
+      _vm._v(" "),
       _vm._l(_vm.todos.todos, function(todo) {
         return _c(
           "v-card",
-          { key: todo.id, staticClass: "mt-7", attrs: { elevation: "2" } },
+          {
+            key: todo.id,
+            staticClass: "mt-7 d-flex",
+            attrs: { elevation: "2" }
+          },
           [
             _c(
               "v-card-text",
@@ -39017,7 +39131,22 @@ var render = function() {
                   "\n            " + _vm._s(todo.title) + "\n            "
                 ),
                 _c("v-spacer"),
-                _vm._v("\n            " + _vm._s(todo.priority) + "\n        ")
+                _vm._v(" "),
+                _c("v-switch", {
+                  attrs: { label: "Finis", color: "red" },
+                  on: {
+                    click: function($event) {
+                      return _vm.setIsExecuteTask(todo.id, todo.is_executed)
+                    }
+                  },
+                  model: {
+                    value: todo.is_executed,
+                    callback: function($$v) {
+                      _vm.$set(todo, "is_executed", $$v)
+                    },
+                    expression: "todo.is_executed"
+                  }
+                })
               ],
               1
             ),

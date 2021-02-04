@@ -18,10 +18,24 @@ class TodosQuery extends Query
         return Type::listOf(GraphQL::type('Todo'));
     }
 
+    public function args(): array
+    {
+        return [
+            'priority' => [
+                'name' => 'priority',
+                'type' => Type::string(),
+            ],
+        ];
+    }
     public function resolve($root, $args)
     {
+
         if (isset($args['id'])) {
             return Todo::find($args['id']);
+        }
+
+        if (isset($args['priority'])) {
+            return Todo::where('priority', $args['priority'])->get();
         }
 
         return Todo::all();
