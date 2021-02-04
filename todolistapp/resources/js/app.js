@@ -23,9 +23,15 @@ Vue.component('app-init', require('./components/Home.vue').default);
 
 import VueRouter from 'vue-router'
 Vue.use(VueRouter)
-
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
+
+const moment = require('moment')
+require('moment/locale/fr')
+
+Vue.use(require('vue-moment'), {
+    moment
+});
 Vue.use(Vuetify)
 
 

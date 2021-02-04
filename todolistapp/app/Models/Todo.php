@@ -12,4 +12,6 @@ class Todo extends Model
         'title', 'date_execution','priority', 'description', 'is_executed'
     ];
 
+
+
 }

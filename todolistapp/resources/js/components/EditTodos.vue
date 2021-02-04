@@ -18,7 +18,7 @@
 
                 <v-card>
                     <v-card-title class="headline">
-                        {{ todos.title }}
+                        {{ todos.title }} - {{ todos.date_execution | moment("dddd Do MMMM YYYY") }}
                     </v-card-title>
 
                     <v-card-text v-if="isEdited" class="d-flex">
@@ -81,24 +81,36 @@
                             </v-radio-group>
                             <v-switch
                                 v-model="todos.is_executed"
-                                label="Finis"
+
                                 color="red"
                             ></v-switch>
                         </v-row>
                         <v-spacer></v-spacer>
-                        <v-btn @click="save">Modifier</v-btn>
+                        <v-btn @click="save(todos.is_executed)">Modifier</v-btn>
                     </v-card-text>
 
+
                     <v-card-text v-if="isShow" class="d-flex">
-                        {{ todos.priority }}<br>
-                        {{ todos.description }}<br>
-                        {{ todos.date_execution }}
-                        <div v-if="todos.is_executed">
-                            Statut : Terminé
+                        <div>
+                            <v-row class="mt-4">
+                                <p> Priorité : {{ todos.priority }}</p>
+                                <v-spacer></v-spacer>
+
+                                    <p v-if="todos.is_executed">
+                                        Statut : Terminé
+                                    </p>
+                                    <p v-if="!todos.is_executed">
+                                        Statut : En cours
+                                    </p>
+
+                            </v-row>
+                            <v-row>
+                                <p> Description :  {{ todos.description }} </p>
+                            </v-row>
                         </div>
-                        <div v-if="!todos.is_executed">
-                            Statut : En cours
-                        </div>
+
+
+
                     </v-card-text>
 
                     <v-divider></v-divider>
@@ -155,49 +167,34 @@ export default{
             this.isEdited = false
             this.isShow = true
         },
-        save  : function () {
-        axios({
-            url: '/graphql',
-            method: 'POST',
-            data: {
-                query:
-                    `mutation{
-                            updateTodo( id:"${ this.todos.id }",title:"${ this.todos.title }",date_execution:"${ this.todos.date_execution }",priority:"${ this.radioGroup }",
-                                       description:"${ this.todos.description }",is_executed:${this.todos.is_executed})
-                            {
-                                id
-                                title
-                                date_execution
-                                priority
-                                description
-                                is_executed
-                            }
-                        }`
+        save  : function (isExecuted) {
+            let executed = false
+            if (isExecuted){
+                executed = true
             }
-        }).then((result) => {
-            console.log(result)
-        });
-},
-        setIsExecuteTask : function (id, isExecuted){
-            this.todos = []
-
             axios({
                 url: '/graphql',
                 method: 'POST',
                 data: {
                     query:
                         `mutation{
-                        updateTodoExecution(id:"${ id }", is_executed: ${ isExecuted })
-                        {
-                            id
-                            is_executed
-                        }
-                    }`
+                                updateTodo( id:"${ this.todos.id }",title:"${ this.todos.title }",date_execution:"${ this.todos.date_execution }",priority:"${ this.radioGroup }",
+                                           description:"${ this.todos.description }",is_executed:${ executed })
+                                {
+                                    id
+                                    title
+                                    date_execution
+                                    priority
+                                    description
+                                    is_executed
+                                }
+                            }`
                 }
             }).then((result) => {
-                console.log("test" + JSON.stringify(result.data))
+                console.log(result.data)
+                this.$emit('message', 'La tache à été modifié avec succès !')
             });
-        }
+        },
 
     }
 }

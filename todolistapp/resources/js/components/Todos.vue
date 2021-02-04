@@ -1,5 +1,8 @@
 <template>
     <div>
+        <div v-if="message.length !== 0">
+            {{ message}}
+        </div>
         <div class="d-flex ">
             <v-spacer></v-spacer>
             <v-dialog
@@ -8,14 +11,16 @@
             >
                 <template v-slot:activator="{ on, attrs }">
                     <v-btn
-                        color="red lighten-3"
+                        color="red lighten-1"
                         dark
                         v-bind="attrs"
                         v-on="on"
                     >
+                        <v-icon>mbi-add</v-icon>
                         Ajouter
                     </v-btn>
                 </template>
+
                 <v-card>
                     <v-card-title class="headline">
                         Nouvelle tâche
@@ -86,20 +91,21 @@
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn
-                            color="primary"
+                            color="red darken"
+                            class="mb-5"
                             text
                             @click="createTodo"
-                            class="mb-5"
                         >
                             Ajouter
                         </v-btn>
-
+                        <v-spacer></v-spacer>
                     </v-card-actions>
                 </v-card>
             </v-dialog>
         </div>
         <v-spacer></v-spacer>
-        <v-divider></v-divider>
+        <v-divider class="mt-5"></v-divider>
+        <p class="mt-5">Filtrer par priorité :</p>
         <div class="d-flex-inline">
             <v-radio-group v-model="radioGroup" row>
             <v-radio
@@ -134,6 +140,7 @@
         <v-card
             elevation="2"
             class="mt-7 d-flex"
+            v-if="todos.length !== 0"
             v-for="todo in todos.todos" v-bind:key="todo.id"
         >
             <v-card-text class="d-flex">
@@ -156,7 +163,7 @@
 
             </v-card-text>
             <v-card-actions>
-                <EditTodos :todos="todo"/>
+                <EditTodos :todos="todo" @message="messageSent"/>
             </v-card-actions>
         </v-card>
     </div>
@@ -164,6 +171,7 @@
 <script>
 import axios from 'axios';
 import EditTodos from '../components/EditTodos.vue';
+
 export default {
     computed: {},
     data() {
@@ -173,12 +181,11 @@ export default {
             priorities : ['Haute', 'Moyenne', 'Basse'],
             title:'',
             description:'',
-            message:'Ma TODO list',
+            message:'',
             radioGroup: 1,
             date: '',
             menu: false,
             dialog: false,
-
         }
     },
   components : { EditTodos },
@@ -249,6 +256,9 @@ export default {
                 console.log("hi priority" + JSON.stringify(result.data))
                 this.todos = result.data.data
             });
+        },
+        messageSent: function (text) {
+            this.message = text
         },
 
     },
